@@ -50,6 +50,7 @@ kubectl create ns wordpress
 kubectl config set-context --current --namespace=wordpress
 
 
+```
 ### 2. Configuration & Secret Provisioning
 Securely inject the database credentials and application environment variables:
 
@@ -63,6 +64,7 @@ kubectl apply -f mysql-cm.yaml
 
 # Verify configuration resources
 kubectl get secret,cm
+```
 
 ### 3. Persistent Storage Allocation
 Provision the required storage abstractions (PVCs) to guarantee database state persistence:
