@@ -1,112 +1,113 @@
-# My Kubernetes Project: Container Orchestration with Kubernetes
+🏗️ Stateful Multi-Tier Infrastructure Orchestration (Kubernetes)
 
-## Project Overview
-This project provides a comprehensive guide to how to automate the deployment, scaling, and management of containerized applications, showcasing your knowledge in modern container orchestration using Kubernetes. The repository includes a well-structured directory with modular configurations, enabling scalable and maintainable infrastructure as code practices. This repository is ideal for cloud architects, DevOps engineers, and anyone looking to practice Kubernetes skills efficiently.
+📖 Overview
+This repository contains production-ready, modular Infrastructure as Code (IaC) configurations designed to automate the deployment, scaling, and lifecycle management of a decoupled, multi-tier application on Kubernetes.
 
-    • Namespace
-    • Secrets
-    • Configmap
-    • Persistent Volume Claim (PVC)
-    • StatefulSet
-    • Deployment
-    • Services
-    • Network Policy.
-    
-## Prerequisites
-- Kubernetes Cluster
-- kubectl
-- Cluster with admin permission to deploy applications.
+Moving beyond basic container deployment, this project demonstrates advanced cluster management practices. It highlights how to successfully isolate stateful database workloads, enforce persistent data lifecycles, securely inject configuration data, and implement strict network micro-segmentation.
 
-## Contact
-If you have any questions, feel free to reach out at marioscloud@duck.com.
 
-## Usage
-1. Clone the repository:
-git clone https://github.com/marioscloud/deploy_wordpress_on_kubernetes
+⚙️ Architectural Framework & DevOps Practices
+The infrastructure is engineered using modular Kubernetes manifests, focusing on scalability, high availability, and security:
 
-2. Navigate to the directory and initiliaze Git:
-git init
+-Stateful vs. Stateless Workload Decoupling: * Stateless Tier: Managed via standard Deployments for the frontend (WordPress), enabling horizontal pod autoscaling and rapid failure recovery.
 
-3. Create a Namespace:
-Run the following commands to create the namespace wordpress and set it as the default.
+-Stateful Tier: Utilizes StatefulSets for the backend (MySQL) to guarantee stable network identifiers, ordered deployment, and predictable persistent storage mapping.
 
+-Secrets & Configuration Management: Decouples configuration from application logic using ConfigMaps (Nginx/MySQL environments) and Kubernetes Secrets to securely inject base64-encoded administrative credentials at runtime.
+
+-Persistent Data Lifecycle: Implements Persistent Volume Claims (PVC) to guarantee zero data loss across pod evictions, database upgrades, or unexpected node failures.
+
+-Zero-Trust Network Micro-segmentation: Enforces strict internal security boundaries via Network Policies, isolating the database layer to accept ingress traffic exclusively from the designated frontend application namespace.
+
+-Environment Isolation: Provisions a dedicated Namespace to enforce logical resource boundaries and strict access control within the cluster.
+
+
+🛠️ Technology Stack
+-->Orchestration: Kubernetes (Compatible with EKS, GKE, AKS, or local clusters)
+
+-->Configuration Management: Native Kubernetes YAML manifests
+
+-->Application Stack: WordPress (Frontend) / Nginx (Web Server) / MySQL (Database)
+
+-->Security: Native Kubernetes Network Policies & Secret Management
+
+
+🚀 Infrastructure Deployment Guide
+
+Prerequisites
+A running Kubernetes cluster with administrative (cluster-admin) privileges.
+
+kubectl CLI tool installed and authenticated to your cluster.
+
+1. Environment Initialization
+Clone the repository and establish the dedicated logical workspace (Namespace):
+
+Bash
+git clone https://github.com/marioscloud/k8s-stateful-multi-tier-architecture.git
+cd k8s-stateful-multi-tier-architecture
+
+# Provision the logical boundary and set the active context
 kubectl create ns wordpress
+kubectl config set-context --current --namespace=wordpress
 
-kubectl config set-context --current --namespace=wordpress\
+2. Configuration & Secret Provisioning
+Securely inject the database credentials and application environment variables:
 
-4. create a secret with a database admin password, username, password, and database name and verify if the secret is created:
-
+Bash
+# Provision encrypted credentials
 kubectl apply -f secret.yaml
 
-kubectl get secret
-
-5. create configmap for Nginx and MySQL, and run the nginx-cm.yaml and mysql-cm.yaml files to create configmap on the WordPress namespace, then confirm that have been created:
-
+# Provision stateless configurations
 kubectl apply -f nginx-cm.yaml
-
 kubectl apply -f mysql-cm.yaml
 
-kubectl get cm
+# Verify configuration resources
+kubectl get secret,cm
 
-6. create PVC for WordPress and MySQL, then confirm that have been created:
+3. Persistent Storage Allocation
+Provision the required storage abstractions (PVCs) to guarantee database state persistence:
 
+Bash
 kubectl apply -f pvc.yaml
+kubectl get pvc,pv
 
-kubectl get pvc
+4. Stateful Database Tier Deployment
+Deploy the database workload and its associated internal headless service:
 
-7. deploy the MySQL database, then confirm that have been done by Kubernetes:
-
+Bash
 kubectl apply -f mysql.yaml
 
-Then, run the following commands to check if the MySQL StatefulSet and its service is deployed
+# Monitor the creation of the stateful workload (This may take a few moments)
+kubectl get sts,svc
 
-kubectl get sts
+5. Application Tier & Network Hardening
+Deploy the stateless frontend and apply the network security policies:
 
-kubectl get svc
-
-For StatefulSet can take for a while to be created, do not worry.
-
-8. Deploy the WordPress application by running the file wordpress.yaml:
-
+Bash
+# Deploy the stateless application tier
 kubectl apply -f wordpress.yaml
 
-Now, run the following commands to check if the WordPress deployment and its service is deployed.
-
-kubectl get deploy
-
-kubectl get svc
-
-Then, check the status of PVC and PV using the following commands
-
-kubectl get pvc
-
-kubectl get pv
-
-9. Create a NetworkPolicy for MySQL running the networkpolicy.yaml file and confirm that has been created:
-
+# Enforce network isolation (Zero-Trust policy for MySQL)
 kubectl apply -f networkpolicy.yaml
 
-kubectl get networkpolicy
+# Verify deployment and security policies
+kubectl get deploy,networkpolicy
 
-10. Finally, Log in to WordPress UI:
+📈 Verifying External Access
+Once the pods are healthy (Running), retrieve the external access parameters to reach the application UI:
 
-Once every object has been created, try to access WordPress on the browser by searching on the browser as {node-IP:nodeport}.
-
-You can find the IP address of your node by running the following command: 
-
+Bash
+# Retrieve the cluster Node IP architecture
 kubectl get nodes -o wide
 
-You can find the NodePort assigned to the WordPress service by running: 
-
+# Identify the assigned NodePort for external routing
 kubectl get service wordpress-service -n wordpress
+Locate the mapped port under the PORT(S) column (e.g., 80:30004/TCP). You can now securely access the application frontend via http://<Node-IP>:<NodePort>.
 
-Look for the PORT(S) column in the output, which will show the NodePort. It should look something like 80:30004/TCP, where 30004 is the NodePort.
+📬 Contact & Attributions
+Author: Mario Araos | Cloud & DevOps Engineer
 
-Thanks for reading.
+Contact: marioscloud@duck.com
 
-
-Acknowledgements
-Thanks to the contributors of Nginx configuration and the other for MySQL init script..
-
-Based on exercises contained in the website devopscube published by Aswin Vijayan: https://devopscube.com/deploy-wordpress-on-kubernetes/
+Attributions: Base deployment methodology inspired by Aswin Vijayan via DevOpsCube.
 
