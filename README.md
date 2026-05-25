@@ -93,6 +93,7 @@ kubectl apply -f networkpolicy.yaml
 # Verify deployment and security policies
 kubectl get deploy,networkpolicy
 
+
 📈 Verifying External Access
 Once the pods are healthy (Running), retrieve the external access parameters to reach the application UI:
 
@@ -102,6 +103,7 @@ kubectl get nodes -o wide
 
 # Identify the assigned NodePort for external routing
 kubectl get service wordpress-service -n wordpress
+
 Locate the mapped port under the PORT(S) column (e.g., 80:30004/TCP). You can now securely access the application frontend via http://<Node-IP>:<NodePort>.
 
 📬 Contact & Attributions
