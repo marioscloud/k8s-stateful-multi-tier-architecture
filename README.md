@@ -48,3 +48,73 @@ cd k8s-stateful-multi-tier-architecture
 # Provision the logical boundary and set the active context
 kubectl create ns wordpress
 kubectl config set-context --current --namespace=wordpress
+
+### 2. Configuration & Secret Provisioning
+Securely inject the database credentials and application environment variables:
+
+```bash
+# Provision encrypted credentials
+kubectl apply -f secret.yaml
+
+# Provision stateless configurations
+kubectl apply -f nginx-cm.yaml
+kubectl apply -f mysql-cm.yaml
+
+# Verify configuration resources
+kubectl get secret,cm
+
+### 3. Persistent Storage Allocation
+Provision the required storage abstractions (PVCs) to guarantee database state persistence:
+
+```bash
+kubectl apply -f pvc.yaml
+kubectl get pvc,pv
+```
+
+### 4. Stateful Database Tier Deployment
+Deploy the database workload and its associated internal headless service:
+
+```bash
+kubectl apply -f mysql.yaml
+
+# Monitor the creation of the stateful workload (This may take a few moments)
+kubectl get sts,svc
+```
+
+### 5. Application Tier & Network Hardening
+Deploy the stateless frontend and apply the network security policies:
+
+```bash
+# Deploy the stateless application tier
+kubectl apply -f wordpress.yaml
+
+# Enforce network isolation (Zero-Trust policy for MySQL)
+kubectl apply -f networkpolicy.yaml
+
+# Verify deployment and security policies
+kubectl get deploy,networkpolicy
+```
+
+---
+
+## 📈 Verifying External Access
+
+Once the pods are healthy (Running), retrieve the external access parameters to reach the application UI:
+
+```bash
+# Retrieve the cluster Node IP architecture
+kubectl get nodes -o wide
+
+# Identify the assigned NodePort for external routing
+kubectl get service wordpress-service -n wordpress
+```
+
+Locate the mapped port under the `PORT(S)` column (e.g., `80:30004/TCP`). You can now securely access the application frontend via `http://<Node-IP>:<NodePort>`.
+
+---
+
+## 📬 Contact & Attributions
+
+* **Author:** Mario Araos | Cloud & DevOps Engineer
+* **Contact:** marioscloud@duck.com
+* **Attributions:** Base deployment methodology inspired by Aswin Vijayan via DevOpsCube.
