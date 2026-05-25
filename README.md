@@ -49,6 +49,7 @@ cd k8s-stateful-multi-tier-architecture
 kubectl create ns wordpress
 kubectl config set-context --current --namespace=wordpress
 
+
 ### 2. Configuration & Secret Provisioning
 Securely inject the database credentials and application environment variables:
 
