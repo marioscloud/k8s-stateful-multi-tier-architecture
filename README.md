@@ -25,6 +25,7 @@ The infrastructure is engineered using modular Kubernetes manifests, focusing on
 
 
 🛠️ Technology Stack
+
 -->Orchestration: Kubernetes (Compatible with EKS, GKE, AKS, or local clusters)
 
 -->Configuration Management: Native Kubernetes YAML manifests
@@ -38,10 +39,11 @@ The infrastructure is engineered using modular Kubernetes manifests, focusing on
 
 Prerequisites
 
-A running Kubernetes cluster with administrative (cluster-admin) privileges.
+-A running Kubernetes cluster with administrative (cluster-admin) privileges.
 
-kubectl CLI tool installed and authenticated to your cluster.
+-kubectl CLI tool installed and authenticated to your cluster.
 
+ 
 1. Environment Initialization
 Clone the repository and establish the dedicated logical workspace (Namespace):
 
@@ -49,7 +51,7 @@ Bash
 git clone https://github.com/marioscloud/k8s-stateful-multi-tier-architecture.git
 cd k8s-stateful-multi-tier-architecture
 
-# Provision the logical boundary and set the active context
+#Provision the logical boundary and set the active context
 kubectl create ns wordpress
 kubectl config set-context --current --namespace=wordpress
 
@@ -57,14 +59,14 @@ kubectl config set-context --current --namespace=wordpress
 Securely inject the database credentials and application environment variables:
 
 Bash
-# Provision encrypted credentials
+#Provision encrypted credentials
 kubectl apply -f secret.yaml
 
-# Provision stateless configurations
+#Provision stateless configurations
 kubectl apply -f nginx-cm.yaml
 kubectl apply -f mysql-cm.yaml
 
-# Verify configuration resources
+#Verify configuration resources
 kubectl get secret,cm
 
 3. Persistent Storage Allocation
@@ -80,20 +82,20 @@ Deploy the database workload and its associated internal headless service:
 Bash
 kubectl apply -f mysql.yaml
 
-# Monitor the creation of the stateful workload (This may take a few moments)
+#Monitor the creation of the stateful workload (This may take a few moments)
 kubectl get sts,svc
 
 5. Application Tier & Network Hardening
 Deploy the stateless frontend and apply the network security policies:
 
 Bash
-# Deploy the stateless application tier
+#Deploy the stateless application tier
 kubectl apply -f wordpress.yaml
 
-# Enforce network isolation (Zero-Trust policy for MySQL)
+#Enforce network isolation (Zero-Trust policy for MySQL)
 kubectl apply -f networkpolicy.yaml
 
-# Verify deployment and security policies
+#Verify deployment and security policies
 kubectl get deploy,networkpolicy
 
 
@@ -102,10 +104,10 @@ kubectl get deploy,networkpolicy
 Once the pods are healthy (Running), retrieve the external access parameters to reach the application UI:
 
 Bash
-# Retrieve the cluster Node IP architecture
+#Retrieve the cluster Node IP architecture
 kubectl get nodes -o wide
 
-# Identify the assigned NodePort for external routing
+#Identify the assigned NodePort for external routing
 kubectl get service wordpress-service -n wordpress
 
 Locate the mapped port under the PORT(S) column (e.g., 80:30004/TCP). You can now securely access the application frontend via http://<Node-IP>:<NodePort>.
