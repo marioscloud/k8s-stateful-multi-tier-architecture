@@ -1,12 +1,14 @@
 🏗️ Stateful Multi-Tier Infrastructure Orchestration (Kubernetes)
 
 📖 Overview
+
 This repository contains production-ready, modular Infrastructure as Code (IaC) configurations designed to automate the deployment, scaling, and lifecycle management of a decoupled, multi-tier application on Kubernetes.
 
 Moving beyond basic container deployment, this project demonstrates advanced cluster management practices. It highlights how to successfully isolate stateful database workloads, enforce persistent data lifecycles, securely inject configuration data, and implement strict network micro-segmentation.
 
 
 ⚙️ Architectural Framework & DevOps Practices
+
 The infrastructure is engineered using modular Kubernetes manifests, focusing on scalability, high availability, and security:
 
 -Stateful vs. Stateless Workload Decoupling: * Stateless Tier: Managed via standard Deployments for the frontend (WordPress), enabling horizontal pod autoscaling and rapid failure recovery.
@@ -35,6 +37,7 @@ The infrastructure is engineered using modular Kubernetes manifests, focusing on
 🚀 Infrastructure Deployment Guide
 
 Prerequisites
+
 A running Kubernetes cluster with administrative (cluster-admin) privileges.
 
 kubectl CLI tool installed and authenticated to your cluster.
@@ -95,6 +98,7 @@ kubectl get deploy,networkpolicy
 
 
 📈 Verifying External Access
+
 Once the pods are healthy (Running), retrieve the external access parameters to reach the application UI:
 
 Bash
